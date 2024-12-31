@@ -60,3 +60,24 @@ export const flyAndScale = (
 		easing: cubicOut
 	};
 };
+
+const date = new Intl.RelativeTimeFormat('en')
+
+export const time_format = (time: number) => {
+	time = time / 1000
+	const u = [60, 60 * 60, 24 * 60 * 60]
+	const p = ['minutes', 'hours', 'days']
+	let o = 'seconds'
+	let t = time
+	let j = 1
+	for (const i in u) {
+		if (Math.abs(time) > u[i]) {
+			j = u[i]
+			o = p[i]
+		}
+	}
+	t /= j
+	return date.format(Math.round(t), o as any)
+}
+
+export type StripResponse<T extends (...args: any) => any> = Awaited<ReturnType<T>>

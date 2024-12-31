@@ -1,6 +1,6 @@
-<div class="flex w-full h-screen">
+<div class="flex w-full min-h-screen">
     <slot name="aside"></slot>
-    <div class="w-full p-6">
+    <div class="w-full p-6 overflow-x-hidden">
         <slot></slot>
     </div>
 </div>

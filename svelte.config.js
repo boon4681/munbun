@@ -5,7 +5,7 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
 	// for more information about preprocessors
-	preprocess: vitePreprocess(),
+	preprocess: [vitePreprocess()],
 
 	kit: {
 		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
@@ -17,7 +17,8 @@ const config = {
 			"$server/*": "./src/lib/server/*",
 			"$schema": "./src/lib/server/db/schema.ts",
 			"$db": "./src/lib/server/db/index.ts",
-			"$constants": "./src/lib/server/constants.ts"
+			"$constants": "./src/lib/server/constants.ts",
+			'@render': './node_modules/@react-email/render/dist/browser/index.mjs',
 		},
 	}
 };

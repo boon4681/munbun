@@ -1,0 +1,455 @@
+/* Basic editor styles */
+.tiptap {
+    :first-child {
+        margin-top: 0;
+    }
+
+    /* List styles */
+    ul,
+    ol {
+        padding: 0 1rem;
+        margin: 1.25rem 1rem 1.25rem 0.4rem;
+
+        li p {
+            margin-top: 0.25em;
+            margin-bottom: 0.25em;
+        }
+    }
+
+    /* Heading styles */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        line-height: 1.1;
+        margin-top: 2.5rem;
+        text-wrap: pretty;
+    }
+
+    h1,
+    h2 {
+        margin-top: 3.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    h1 {
+        font-size: 1.4rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    h3 {
+        font-size: 1.1rem;
+    }
+
+    h4,
+    h5,
+    h6 {
+        font-size: 1rem;
+    }
+
+    /* Code and preformatted text styles */
+    code {
+        background-color: var(--purple-light);
+        border-radius: 0.4rem;
+        color: var(--black);
+        font-size: 0.85rem;
+        padding: 0.25em 0.3em;
+    }
+
+    pre {
+        background: var(--black);
+        border-radius: 0.5rem;
+        color: var(--white);
+        font-family: 'JetBrainsMono', monospace;
+        margin: 1.5rem 0;
+        padding: 0.75rem 1rem;
+
+        code {
+            background: none;
+            color: inherit;
+            font-size: 0.8rem;
+            padding: 0;
+        }
+    }
+
+    blockquote {
+        border-left: 3px solid var(--gray-3);
+        margin: 1.5rem 0;
+        padding-left: 1rem;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid var(--gray-2);
+        margin: 2rem 0;
+    }
+}
+
+:root {
+    --placeholder-color: #adb5bd;
+    --bg-color: #ffffff;
+
+    --variable-icon-size: 12px;
+    --variable-icon-gap: 4px;
+}
+
+.tiptap .mly-prose p:where([class~='text-sm']) {
+    font-size: 16px;
+}
+
+.tiptap .mly-prose h1,
+.tiptap .mly-prose h2,
+.tiptap .mly-prose h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.tiptap .mly-prose h1 {
+    font-size: 36px;
+}
+
+.tiptap .mly-prose h2 {
+    font-size: 30px;
+}
+
+.tiptap .mly-prose h3 {
+    font-size: 24px;
+}
+
+.tiptap .mly-prose p {
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.tiptap .mly-prose h1+p,
+.tiptap .mly-prose h2+p,
+.tiptap .mly-prose h3+p,
+.tiptap .mly-prose hr+p,
+.tiptap .mly-prose table+p {
+    margin-top: 0;
+}
+
+.tiptap .mly-prose ol,
+.tiptap .mly-prose ul {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.tiptap .mly-prose li:not(:last-child) {
+    margin-bottom: 8px;
+}
+
+.tiptap .mly-prose li>p {
+    margin: 0;
+}
+
+.tiptap .mly-prose img,
+.tiptap .mly-prose .node-logo {
+    margin-top: 0;
+    margin-bottom: 32px;
+}
+
+.tiptap .mly-prose hr {
+    margin-block: 32px;
+}
+
+.tiptap .mly-prose .footer {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 20px;
+    color: rgb(100, 116, 139);
+}
+
+.tiptap .mly-prose .spacer+* {
+    margin-top: 0;
+}
+
+.tiptap .mly-prose p+.spacer {
+    margin-top: -20px;
+}
+
+.tiptap .mly-prose blockquote+.spacer {
+    margin-top: -16px;
+}
+
+.tiptap .mly-prose h1+.spacer,
+.tiptap .mly-prose h2+.spacer,
+.tiptap .mly-prose h3+.spacer {
+    margin-top: -12px;
+}
+
+.tiptap .mly-prose ol+.spacer,
+.tiptap .mly-prose ul+.spacer {
+    margin-top: -20px;
+}
+
+.tiptap .mly-prose img+.spacer,
+.tiptap .mly-prose .node-logo+.spacer {
+    margin-top: -32px;
+}
+
+.tiptap .mly-prose .node-button+.spacer,
+.tiptap .mly-prose .node-linkCard+.spacer,
+.tiptap .mly-prose footer+.spacer {
+    margin-top: -20px;
+}
+
+.tiptap .mly-prose .node-button,
+.tiptap .mly-prose .node-linkCard {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.tiptap .mly-prose .node-image {
+    line-height: 0;
+    margin-top: 0;
+    margin-bottom: 32px;
+    outline: none;
+}
+
+.tiptap .mly-prose .node-image+.spacer {
+    margin-top: -32px;
+}
+
+/* Remove code ::before and ::after */
+.tiptap .mly-prose code::before,
+.tiptap .mly-prose code::after {
+    content: none;
+}
+
+/* Chrome, Safari and Opera */
+.mly-no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.mly-no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.tiptap .react-colorful__alpha {
+    border-radius: 0;
+}
+
+.tiptap .react-colorful__saturation,
+.tiptap .react-colorful__hue,
+.tiptap .react-colorful__alpha {
+    border-radius: 8px;
+}
+
+.tiptap .react-colorful__hue,
+.tiptap .react-colorful__alpha {
+    height: 16px;
+}
+
+.tiptap .react-colorful__pointer {
+    width: 16px;
+    height: 16px;
+}
+
+.ProseMirror-selectednode::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    pointer-events: none;
+    border-radius: 6px;
+    background: rgba(35, 131, 226, 0.14);
+}
+
+.mly-prose {
+    strong {
+        color: currentColor;
+    }
+}
+
+.ProseMirror {
+    position: relative;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    white-space: break-spaces;
+    -webkit-font-variant-ligatures: none;
+    font-variant-ligatures: none;
+    font-feature-settings: 'liga' 0;
+    /* the above doesn't seem to work in Edge */
+
+    &:focus {
+        outline: none;
+    }
+
+    p {
+        margin-top: 0;
+    }
+
+    h1 {
+        --variable-icon-size: 28px;
+    }
+
+    h2 {
+        --variable-icon-size: 24px;
+    }
+
+    h3 {
+        --variable-icon-size: 20px;
+    }
+
+    h1,
+    h2,
+    h3 {
+        --variable-icon-gap: 8px;
+    }
+
+    .is-editor-empty:first-child:not([data-type='columns'],
+        [data-type='section'],
+        ul,
+        li,
+        ol)::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: var(--placeholder-color);
+        pointer-events: none;
+        height: 0;
+    }
+
+    .is-empty:not([data-type='columns'],
+        [data-type='section'],
+        ol,
+        ul,
+        li)::before {
+        content: attr(data-placeholder);
+        float: left;
+        color: var(--placeholder-color);
+        pointer-events: none;
+        height: 0;
+    }
+
+    [data-type='columns'] .is-empty::before,
+    [data-type='section'] .is-empty::before {
+        --l-threshold: 0.66;
+        --diff: calc(var(--l-threshold) - l);
+        color: oklch(from var(--bg-color) clamp(0.05, max(min(var(--diff) * infinity, 1), 0), 0.95) c h) !important;
+        opacity: 0.6;
+    }
+
+    [data-type='columns'] {
+        display: flex;
+        margin: 0;
+        padding: 0;
+
+        &.has-focus [data-type='column'],
+        &:hover [data-type='column'] {
+            outline: 1.5px solid #e9ecef;
+            outline-style: dashed;
+        }
+
+        [data-type='column'].has-focus {
+            outline-style: solid;
+        }
+    }
+
+    [data-type='column'] {
+        display: table-cell;
+        flex-basis: 0;
+        flex-grow: 1;
+        overflow: auto;
+
+        &>*:first-child {
+            margin-top: 0;
+        }
+
+        &>*:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    [data-type='section'] {
+        margin: 0;
+        padding: 0;
+
+        [data-type='section-cell'] {
+            padding: 0;
+
+            &>*:first-child {
+                margin-top: 0;
+            }
+
+            &>*:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    [data-type='for'] {
+        [data-node-view-content]>div {
+            &>*:first-child {
+                margin-top: 0;
+            }
+
+            &>*:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    .node-for.has-focus [data-repeat-indicator] {
+        opacity: 1;
+    }
+
+    [data-type='show'] {
+        [data-node-view-content]>div {
+            &>*:first-child {
+                margin-top: 0;
+            }
+
+            &>*:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    /* Remove margin before and after of Gap Cursor */
+    *:has(+ .ProseMirror-gapcursor) {
+        margin-bottom: 0 !important;
+    }
+
+    .ProseMirror-gapcursor {
+        &::after {
+            border: 1.5px solid gray;
+            width: 24px;
+        }
+
+        &+* {
+            margin-top: 0 !important;
+        }
+    }
+}
+
+/* Hide Number Count */
+.hide-number-controls {
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    &[type='number'] {
+        -moz-appearance: textfield;
+    }
+}
+
+.hide-scrollbars {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}

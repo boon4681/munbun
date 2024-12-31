@@ -51,7 +51,7 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div class="sticky top-0 left-0 z-[1000]">
+<div class="sticky top-0 left-0 z-[1000] h-screen">
     <div
         on:click={() => sidebar.set(false)}
         class:opacity-0={!$sidebar}
@@ -60,7 +60,7 @@
     ></div>
     <div
         class:-translate-x-[100%]={!$sidebar}
-        class="w-[240px] p-2 h-full px-2 shadow-xl border-r md:translate-x-0 transform transition-all shrink-0 flex flex-col gap-6 py-6 absolute md:relative"
+        class="w-[240px] bg-background p-2 h-full px-2 shadow-xl border-r md:translate-x-0 transform transition-all shrink-0 flex flex-col gap-6 py-6 absolute md:relative"
     >
         <Button
             on:click={() => sidebar.set(!$sidebar)}

@@ -1,5 +1,4 @@
 import { Hono } from 'hono'
-// import { googleAuth, revokeToken } from '@hono/oauth-providers/google';
 import { decode, sign, verify } from 'hono/jwt'
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie'
 import { html } from 'hono/html';
@@ -20,6 +19,13 @@ const google = new Hono().get('/google', googleAuth({
     let userAuth = await db.query.USER.findFirst({
         where: eq(USER.email, user.email!),
     })
+    if (await KV.get(KVEndpoint.setup) == "false") {
+        await KV.set(KVEndpoint.setup, "true")
+    }
+    if (userAuth && await KV.get(KVEndpoint.setup) == "true") {
+        console.error('ERROR: superadmin already setup')
+        return c.html(html`<script>window.localStorage.removeItem("${CookieName}");window.close()</script>`)
+    }
     if (!userAuth) {
         await db.insert(USER).values({
             email: user.email!,
@@ -27,10 +33,7 @@ const google = new Hono().get('/google', googleAuth({
             created_at: new Date().toISOString().split('.')[0]
         })
         userAuth = await db.query.USER.findFirst({
-            where: eq(USER.email, user.email!),
-            with: {
-                role: true
-            }
+            where: eq(USER.email, user.email!)
         })
     }
     const secret = await KV.get(KVEndpoint.jwt_secret)! as any

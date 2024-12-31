@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS `_kvs_value_unique`;

@@ -3,8 +3,12 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
 	darkMode: ["class"],
-	content: ["./src/**/*.{html,js,svelte,ts}"],
+	content: ["./src/**/*.{html,js,svelte,ts,tsx}"],
 	safelist: ["dark"],
+	plugins: [
+		require('@tailwindcss/typography'),
+		// ...
+	  ],
 	theme: {
 		container: {
 			// center: true,

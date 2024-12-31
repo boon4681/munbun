@@ -1,6 +1,7 @@
 import { writable } from "svelte/store";
+import type { User } from "./api";
 
-export const sidebar = writable(true);
+export const sidebar = writable(false);
 
 export const settings = writable({
     preference: {
@@ -12,3 +13,13 @@ export const settings = writable({
         }
     }
 })
+
+export const ready = writable<boolean>(false)
+export const me = writable<User>()
+export const slashVisible = writable(false);
+export const slashItems = writable([]);
+export const slashLocaltion = writable({ x: 0, y: 0, height: 0 });
+export const slashProps = writable({ editor: null, range: null });
+export const desktopMenu = writable(true);
+export const components = writable([]);
+export const editorWidth = writable(0);

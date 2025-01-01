@@ -10,6 +10,9 @@ export type Log = StripResponse<typeof GetLogs>[number]
 
 const client = createClient(fetch)
 const GetMe = api(client.user["@me"].$get)
+const GetAllUsers = api(client.user.all.$get)
+const CreateUser = api(client.user.$post)
+const DeleteUser = api(client.user.$delete)
 
 const GetAllProjects = api(client.project.all.$get)
 const GetProject = api(client.project[":id"].$get)
@@ -31,6 +34,9 @@ const V1GetProviders = api(client.v1.providers.$get)
 const ClientAPI = {
     // user
     GetMe,
+    GetAllUsers,
+    CreateUser,
+    DeleteUser,
     // projects
     GetAllProjects,
     GetProject,

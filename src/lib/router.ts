@@ -3,6 +3,7 @@ import Fingerprint from "lucide-svelte/icons/fingerprint";
 import Monitor from "lucide-svelte/icons/monitor";
 import Grid2x2 from "lucide-svelte/icons/grid-2x2";
 import Bolt from "lucide-svelte/icons/bolt";
+import { User } from "lucide-svelte";
 
 export const router = (): Record<string, Path[]> | Record<string, Path[]> => {
     return {
@@ -18,6 +19,12 @@ export const router = (): Record<string, Path[]> | Record<string, Path[]> => {
                 to: "/logs",
                 match: "/logs",
                 icon: Monitor,
+            },
+            {
+                name: "Users",
+                to: "/users",
+                match: "/users",
+                icon: User,
             },
             {
                 name: "Settings",

@@ -37,7 +37,7 @@
             <div class="w-12 max-w-12 overflow-hidden overflow-ellipsis">
                 {log.id}
             </div>
-            <div class="w-16">
+            <div class="w-20">
                 {message.request.method}
             </div>
             <div class="w-full max-w-48 overflow-hidden overflow-ellipsis">

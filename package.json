@@ -23,6 +23,7 @@
 		"@types/nodemailer": "^6.4.17",
 		"@types/react": "^19.0.2",
 		"@types/react-dom": "^19.0.2",
+		"@types/tinycolor2": "^1.4.6",
 		"autoprefixer": "^10.4.20",
 		"bits-ui": "^0.22.0",
 		"clsx": "^2.1.1",

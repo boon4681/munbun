@@ -6,7 +6,7 @@
     import { base } from "$app/paths";
     const dispatch = createEventDispatcher();
     import { page } from "$app/stores";
-    import { Menu } from "lucide-svelte";
+    import Menu from "lucide-svelte/icons/menu"
     import { sidebar } from "@/store.js";
     import Button from "@/components/ui/button/button.svelte";
     import { build, match } from "@/route.js";

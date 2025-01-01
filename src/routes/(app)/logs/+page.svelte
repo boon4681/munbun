@@ -46,7 +46,7 @@
             <div class="w-full flex gap-2 max-w-54 overflow-hidden overflow-ellipsis">
                 {#if message["user"]}
                     <img class="size-8 rounded-full" src={message.user.picture} alt="" />
-                    <div class="w-full overflow-hidden overflow-ellipsis">{message["user"]["email"].split("@")[0]}</div>
+                    <div class="w-full overflow-hidden overflow-ellipsis">{message["user"]["email"]}</div>
                 {/if}
             </div>
             <div class="w-full flex justify-end">

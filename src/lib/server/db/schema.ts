@@ -41,8 +41,10 @@ export const kvTable = sqliteTable("_kvs", {
 });
 
 export const logTable = sqliteTable("_logs", {
-	status: text("key").notNull().unique().primaryKey(),
-	message: text("value").notNull().unique(),
+	id: text('id').primaryKey().$defaultFn(() => createId()),
+	tag: text("tag").notNull(),
+	status: text("status").notNull(),
+	message: text("message").notNull(),
 	created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`).notNull(),
 })
 

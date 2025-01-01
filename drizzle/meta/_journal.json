@@ -22,6 +22,13 @@
       "when": 1735681894313,
       "tag": "0002_unique_champions",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1735691521282,
+      "tag": "0003_wealthy_nitro",
+      "breakpoints": true
     }
   ]
 }

@@ -1,10 +1,13 @@
 import { Hono } from "hono";
+import { logger } from 'hono/logger'
 import AuthRoute from "$server/api/auth/auth.route"
 import UserRoute from "$server/api/user/user.route"
 import ProjectRoute from "$server/api/project/project.route"
 import TemplateRoute from "$server/api/template/template.route"
 import SettingsRoute from "$server/api/settings/settings.route"
+import LogsRoute from "$server/api/logs/logs.route"
 import V1Route from "$server/api/v1/v1.route"
+import { dbLogger } from "./logger";
 
 const router = new Hono()
     .route('/auth', AuthRoute)
@@ -12,6 +15,7 @@ const router = new Hono()
     .route('/project', ProjectRoute)
     .route('/template', TemplateRoute)
     .route('/settings', SettingsRoute)
+    .route('/logs', LogsRoute)
     .route('/v1', V1Route);
 
 // router.doc('/developer/doc', {
@@ -22,7 +26,7 @@ const router = new Hono()
 //     },
 // })
 
-const app = new Hono().route('/api', router)
+const app = new Hono().use(dbLogger).route('/api', router)
 
 // app.get('/developer/docs', swaggerUI({ url: '/api/developer/doc' }));
 

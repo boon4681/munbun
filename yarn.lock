@@ -427,6 +427,11 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.8.tgz#21a907684723bbbaa5f0974cf7730bd797eb8e62"
   integrity sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==
 
+"@hono/node-server@^1.13.7":
+  version "1.13.7"
+  resolved "https://registry.yarnpkg.com/@hono/node-server/-/node-server-1.13.7.tgz#af95cf97bd24ddffc97e72851738cbde0a98c791"
+  integrity sha512-kTfUMsoloVKtRA2fLiGSd9qBddmru9KadNyhJCwgKBxTiNkaAJEwkVN9KV/rS4HtmmNRtUh6P+YpmjRMl0d9vQ==
+
 "@hono/oauth-providers@^0.6.2":
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/@hono/oauth-providers/-/oauth-providers-0.6.2.tgz#5980565b40c553a5244117ac8ea32a400255e7fa"

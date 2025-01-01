@@ -95,6 +95,7 @@
 		"svelte-sonner": "^0.3.28",
 		"svelte-tiptap": "^2.1.0",
 		"thememirror": "^2.0.1",
+		"tinycolor2": "^1.6.0",
 		"tippy.js": "^6.3.7",
 		"y-partykit": "0.0.0-1f86d17",
 		"y-protocols": "^1.0.5",

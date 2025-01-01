@@ -43,6 +43,12 @@
             <div class="w-full max-w-48 overflow-hidden overflow-ellipsis">
                 {message.request.path}
             </div>
+            <div class="w-full flex gap-2 max-w-48 overflow-hidden overflow-ellipsis">
+                {#if message["user"]}
+                    <img class="size-8 rounded-full" src={message.user.picture} alt="" />
+                    <div>{message["user"]["email"]}</div>
+                {/if}
+            </div>
             <div class="w-full flex justify-end">
                 {new Date(log.created_at).toLocaleString()}
             </div>

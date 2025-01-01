@@ -1,7 +1,11 @@
 import type { Context, MiddlewareHandler, Next } from "hono";
 import { getPath } from "hono/utils/url"
-import db from "./db";
+import db, { KV } from "./db";
 import { logTable } from "./db/schema";
+import { getCookie } from "hono/cookie";
+import { CookieName, KVEndpoint } from "./constants";
+import type { JWTPayload } from "jose";
+import { decode, verify } from "hono/jwt";
 export const dbLogger: MiddlewareHandler = async (c: Context, next: Next) => {
     const { method } = c.req
     const path = getPath(c.req.raw)
@@ -14,13 +18,21 @@ export const dbLogger: MiddlewareHandler = async (c: Context, next: Next) => {
     const start = Date.now()
     await next()
     const { status } = c.res
-    message = {
-        ...message,
-        response: {
-            status,
-            ok: String(c.res.ok),
-            time: time(start),
-        },
+    message["response"] = {
+        status,
+        ok: String(c.res.ok),
+        time: time(start),
+    }
+    const token = getCookie(c, CookieName ?? 'token') ?? c.req.header('Authorization')?.split("Bearer ")[1]
+    if (token) {
+        let payload: JWTPayload | undefined = undefined
+        try {
+            payload = await verify(token, await KV.get(KVEndpoint.jwt_secret) as any)
+            message["user"] = {
+                email: payload.email,
+                picture: `/api/avatar/${payload.id}`
+            }
+        } catch (error) { }
     }
     if (c.error) {
         message['error'] = {

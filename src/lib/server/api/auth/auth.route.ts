@@ -19,8 +19,9 @@ const google = new Hono().get('/google', googleAuth({
     let userAuth = await db.query.USER.findFirst({
         where: eq(USER.email, user.email!),
     })
-    if (await KV.get(KVEndpoint.setup) == "false") {
-        await KV.set(KVEndpoint.setup, "true")
+    let uesrs = await db.query.USER.findMany()
+    if (uesrs.length == 0) {
+        await KV.set(KVEndpoint.setup, "false")
     }
     if (!userAuth && await KV.get(KVEndpoint.setup) == "true") {
         console.error('ERROR: superadmin already setup')
@@ -35,6 +36,9 @@ const google = new Hono().get('/google', googleAuth({
         userAuth = await db.query.USER.findFirst({
             where: eq(USER.email, user.email!)
         })
+    }
+    if (await KV.get(KVEndpoint.setup) == "false") {
+        await KV.set(KVEndpoint.setup, "true")
     }
     const secret = await KV.get(KVEndpoint.jwt_secret)! as any
     const signed = await sign({ ...user, id: userAuth!.id, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 15, }, secret)

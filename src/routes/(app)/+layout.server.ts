@@ -10,7 +10,7 @@ export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
     const token = cookies.get(CookieName)
     if (token && await JWT.verified(token)) {
         const client = createClient(fetch)
-        const providers = await api(client.v1.providers.$get)
+        const providers = await api(client.v1.providers.$get)()
         return {
             ready: providers.length > 0
         }

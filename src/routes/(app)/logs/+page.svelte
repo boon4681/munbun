@@ -43,10 +43,10 @@
             <div class="w-full max-w-48 overflow-hidden overflow-ellipsis">
                 {message.request.path}
             </div>
-            <div class="w-full flex gap-2 max-w-48 overflow-hidden overflow-ellipsis">
+            <div class="w-full flex gap-2 max-w-54 overflow-hidden overflow-ellipsis">
                 {#if message["user"]}
                     <img class="size-8 rounded-full" src={message.user.picture} alt="" />
-                    <div>{message["user"]["email"]}</div>
+                    <div class="w-full overflow-hidden overflow-ellipsis">{message["user"]["email"].split("@")[0]}</div>
                 {/if}
             </div>
             <div class="w-full flex justify-end">

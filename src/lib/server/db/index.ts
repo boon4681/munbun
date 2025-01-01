@@ -3,8 +3,9 @@ import Database from 'better-sqlite3';
 import { env } from '$env/dynamic/private';
 import * as schema from "$server/db/schema"
 import { eq } from 'drizzle-orm';
+import fs from 'node:fs';
 import type { KVEndpoint } from '../constants';
-if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
+if(!fs.existsSync("_munbun_")) fs.mkdirSync("_munbun_")
 const client = new Database(env.DATABASE_URL);
 const db = drizzle(client, { schema })
 export default db;

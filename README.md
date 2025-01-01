@@ -11,6 +11,11 @@
 ### Master Your Emails, Effortlessly
 Say goodbye to email headaches! With Munbun, Email Template Manager, you can design, customize, and send stunning emails using your favorite providers—all in one place.
 
+## Todo
+- [] Logging system
+- [] Account management
+- [] Edit project and template details
+
 ## Features
 
 - [x] Rest API

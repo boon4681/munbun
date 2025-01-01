@@ -1,38 +1,65 @@
-# sv
+# Munbun
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+![image](http://sharex.boon4681.com/u/FUpqj2.png)
 
-## Creating a project
+<p align="center" style="margin-top: 20px">
+  <p align="center">
+    The Open Source email template manager.
+  </p>
+</p>
 
-If you're seeing this, you've probably already done this step. Congrats!
+### Master Your Emails, Effortlessly
+Say goodbye to email headaches! With Munbun, Email Template Manager, you can design, customize, and send stunning emails using your favorite providers—all in one place.
 
-```bash
-# create a new project in the current directory
-npx sv create
+## Features
 
-# create a new project in my-app
-npx sv create my-app
-```
+- [x] Rest API
+- [x] Dashboard
+- [x] Gmail SMTP support
+- [x] Resend support
 
-## Developing
+## Tech Stack
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+- [Sveltekit](https://svelte.dev/docs/kit/) - Framework
+- [Drizzle](https://orm.drizzle.team/) - ORM
+- [Tailwind](https://tailwindcss.com/) - CSS
+- [shadcn-svelte](https://www.shadcn-svelte.com/) - Component Library
+- [hono](https://hono.dev/) - API
 
-```bash
-npm run dev
+## Self-hosting
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+### From Repo
+1. **Clone the repo**
 
-## Building
+    Clone it on your local machine using:
+    ```bash
+    git clone https://github.com/boon4681/munbun.git
+    ```
 
-To create a production version of your app:
+2. **Install Dependencies**
+   
+    ```bash
+    yarn
+    # or
+    npm install
+    ```
 
-```bash
-npm run build
-```
 
-You can preview the production build with `npm run preview`.
+3. **Copy the env.example file into .env**
+   
+    ```bash
+    cp .env.example .env
+    ```
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+4. **Run it**
+
+    ```bash
+    yarn dev --host
+    ```
+
+### Docker
+not yet...
+
+## Maintainer
+
+- boon4681

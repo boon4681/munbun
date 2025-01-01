@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 import fs from 'node:fs';
 import type { KVEndpoint } from '../constants';
 if(!fs.existsSync("_munbun_")) fs.mkdirSync("_munbun_")
-const client = new Database(env.DATABASE_URL);
+const client = new Database("_munbun_/data.db");
 const db = drizzle(client, { schema })
 export default db;
 

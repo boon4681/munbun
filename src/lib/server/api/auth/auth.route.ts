@@ -22,7 +22,7 @@ const google = new Hono().get('/google', googleAuth({
     if (await KV.get(KVEndpoint.setup) == "false") {
         await KV.set(KVEndpoint.setup, "true")
     }
-    if (userAuth && await KV.get(KVEndpoint.setup) == "true") {
+    if (!userAuth && await KV.get(KVEndpoint.setup) == "true") {
         console.error('ERROR: superadmin already setup')
         return c.html(html`<script>window.localStorage.removeItem("${CookieName}");window.close()</script>`)
     }

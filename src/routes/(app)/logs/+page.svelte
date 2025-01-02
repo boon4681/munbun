@@ -50,9 +50,9 @@
                 {/if}
             </div>
             <div class="w-full flex justify-end">
-                {new Date(log.created_at).toLocaleString()}
+                {new Date(log.created_at + "Z").toLocaleString()}
             </div>
-            <div class="w-20 flex justify-end">
+            <div class="w-12 shrink-0 flex justify-end">
                 {message.response.time}
             </div>
         </div>

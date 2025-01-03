@@ -18,8 +18,11 @@
     import { codeToHtml } from "shiki";
     import { mode } from "mode-watcher";
     import Preview from "./(components)/preview.svelte";
+    import Deployment from "./(components)/deployment.svelte";
+    import { toast } from "svelte-sonner";
 
     let { data } = $props();
+    let isDeploying = $state(false);
     let variables = $state(data.template.variables);
     const createShortId = init({
         length: 8,
@@ -47,7 +50,6 @@
                 variables,
             },
         });
-        console.log(json);
     };
     const json = () => {
         const kv: Record<string, string> = {};
@@ -55,6 +57,24 @@
             kv[u.name] = u.value ?? "";
         }
         return kv;
+    };
+    const deploy = async () => {
+        if (isDeploying) return;
+        isDeploying = true;
+        let start = Date.now();
+        await client.CreateDeployment({
+            param: {
+                project: data.template.project,
+                name: data.template.name,
+            },
+        });
+        setTimeout(
+            () => {
+                isDeploying = false;
+                toast("Deployed " + [data.template.project, data.template.name].join("-"));
+            },
+            Math.max(1000, Date.now() - start),
+        );
     };
     let preview: string = "";
     const languages = [
@@ -148,13 +168,20 @@ try {
             <Preview {preview}></Preview>
         </Dialog.Content>
     </Dialog.Root>
+    <Button variant="outline" on:click={deploy}>
+        {#if isDeploying}
+            <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />
+        {/if}
+        Deploy
+    </Button>
 </div>
 
-<Tabs.Root value="variables" class="w-full overflow-x-hidden max-h-none min-h-[700px]">
+<Tabs.Root value="deployment" class="w-full overflow-x-hidden max-h-none min-h-[700px]">
     <Tabs.List>
         <Tabs.Trigger value="variables">Variables</Tabs.Trigger>
         <Tabs.Trigger value="editor">Editor</Tabs.Trigger>
-        <Tabs.Trigger value="code">Code</Tabs.Trigger>
+        <Tabs.Trigger value="code">CodeGen</Tabs.Trigger>
+        <Tabs.Trigger value="deployment">Deployment</Tabs.Trigger>
     </Tabs.List>
     <Tabs.Content value="editor">
         <Editor
@@ -208,6 +235,9 @@ try {
         {#await languages.find((a) => a.value == selectedLanguage.value)?.mapper() then a}
             {@html a}
         {/await}
+    </Tabs.Content>
+    <Tabs.Content value="deployment">
+        <Deployment project={data.template.project} template={data.template.name}></Deployment>
     </Tabs.Content>
 </Tabs.Root>
 

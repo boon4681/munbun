@@ -38,7 +38,8 @@ export const ResendSendEmail = createRoute({
                         template: z.string(),
                         from: z.string(),
                         to: z.array(z.string()),
-                        data: z.record(z.string(), z.string())
+                        data: z.record(z.string(), z.string()),
+                        deploy: z.string().optional()
                     })
                 }
             }
@@ -70,7 +71,8 @@ export const GMailSendEmail = createRoute({
                         subject: z.string(),
                         template: z.string(),
                         to: z.array(z.string()),
-                        data: z.record(z.string(), z.string())
+                        data: z.record(z.string(), z.string()),
+                        deploy: z.string().optional()
                     })
                 }
             }

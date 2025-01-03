@@ -7,6 +7,7 @@ export type Project = StripResponse<typeof GetAllProjects>[number]
 export type Template = StripResponse<typeof GetAllTemplates>[number]
 export type User = StripResponse<typeof GetMe>
 export type Log = StripResponse<typeof GetLogs>[number]
+export type Deploy = StripResponse<typeof GetAllDeployment>[number]
 
 const client = createClient(fetch)
 const GetMe = api(client.user["@me"].$get)
@@ -28,6 +29,8 @@ const SaveTemplate = api(client.template[":project"][":name"].save.$post)
 const SaveEmailConfig = api(client.settings['email'].$post)
 
 const GetLogs = api(client.logs.logs.$get)
+const GetAllDeployment = api(client.deploy[":project"][":name"].$get)
+const CreateDeployment = api(client.deploy[":project"][":name"].$post)
 
 const V1GetProviders = api(client.v1.providers.$get)
 
@@ -52,6 +55,9 @@ const ClientAPI = {
     SaveEmailConfig,
     // logs
     GetLogs,
+    // deployment
+    GetAllDeployment,
+    CreateDeployment,
     // v1
     V1GetProviders
 }

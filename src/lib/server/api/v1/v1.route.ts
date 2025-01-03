@@ -5,8 +5,8 @@ import { jwt_secret } from '@/server/jwt';
 import { createRouter } from '@/server/utils';
 import db, { KV } from '@/server/db';
 import { GetProviders, GMailSendEmail, ResendSendEmail } from './v1.openapi';
-import { and, eq } from 'drizzle-orm';
-import { PROJECT, TEMPLATE } from '@/server/db/schema';
+import { and, desc, eq } from 'drizzle-orm';
+import { DEPLOYMENT, PROJECT, TEMPLATE } from '@/server/db/schema';
 import { Resend } from 'resend';
 import nodemailer from "nodemailer";
 import mjml2html from 'mjml';
@@ -73,15 +73,26 @@ const RouteResendSendEmail = createRouter().openapi(ResendSendEmail, async (c) =
         )
     })
     if (!template) return c.json({ message: "Project or Template not found" }, 404)
+    const deploy = await db.query.DEPLOYMENT.findFirst({
+        where: and(
+            ...[
+                eq(DEPLOYMENT.project, project.id),
+                eq(DEPLOYMENT.template_name, template.name),
+                validated.deploy ? eq(DEPLOYMENT.id, validated.deploy) : undefined
+            ].filter(a => a)
+        ),
+        orderBy: desc(DEPLOYMENT.created_at)
+    })
+    if (!deploy) return c.json({ message: "Deployment not found" }, 404)
     const resend: false | Resend = await getResend(true) as any
     if (resend == false) return c.json({ message: "Resend is not setup properly" }, 400)
-    let html = template.template ?? ""
-    for (const v of template.variables) {
+    let html = deploy.template ?? ""
+    for (const v of deploy.variables) {
         if (!validated.data[v.name]) {
             return c.json({ message: "Error missing " + JSON.stringify(v.name) + " variable" }, 400)
         }
     }
-    for (const v of template.variables) {
+    for (const v of deploy.variables) {
         html = html.replaceAll("{{" + v.name + "}}", validated.data[v.name])
     }
     const result = mjml2html(html)
@@ -116,15 +127,26 @@ const RouteGMailSendEmail = createRouter().openapi(GMailSendEmail, async (c) => 
         )
     })
     if (!template) return c.json({ message: "Project or Template not found" }, 404)
+    const deploy = await db.query.DEPLOYMENT.findFirst({
+        where: and(
+            ...[
+                eq(DEPLOYMENT.project, project.id),
+                eq(DEPLOYMENT.template_name, template.name),
+                validated.deploy ? eq(DEPLOYMENT.id, validated.deploy) : undefined
+            ].filter(a => a)
+        ),
+        orderBy: desc(DEPLOYMENT.created_at)
+    })
+    if (!deploy) return c.json({ message: "Deployment not found" }, 404)
     const transporter: false | nodemailer.Transporter<SMTPTransport.SentMessageInfo, SMTPTransport.Options> = await getGmailSMTP(true) as any
     if (transporter == false) return c.json({ message: "Gmail SMTP is not setup properly" }, 400)
-    let html = template.template ?? ""
-    for (const v of template.variables) {
+    let html = deploy.template ?? ""
+    for (const v of deploy.variables) {
         if (!validated.data[v.name]) {
             return c.json({ message: "Error missing " + JSON.stringify(v.name) + " variable" }, 400)
         }
     }
-    for (const v of template.variables) {
+    for (const v of deploy.variables) {
         html = html.replaceAll("{{" + v.name + "}}", validated.data[v.name])
     }
     try {

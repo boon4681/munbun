@@ -7,6 +7,7 @@
     let className: string = "";
     export let show = false;
     export let placeholder = "";
+    export let closeOnCopy = true;
     export { className as class };
 
     let copied = false;
@@ -32,7 +33,9 @@
         copyText.remove();
         copied = true;
         setTimeout(() => {
-            show = false;
+            if (closeOnCopy) {
+                show = false;
+            }
             copied = false;
         }, 1000);
     };

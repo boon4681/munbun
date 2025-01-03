@@ -7,6 +7,7 @@ import TemplateRoute from "$server/api/template/template.route"
 import SettingsRoute from "$server/api/settings/settings.route"
 import LogsRoute from "$server/api/logs/logs.route"
 import V1Route from "$server/api/v1/v1.route"
+import DeploymentRoute from "$server/api/deploy/deploy.route"
 import { dbLogger } from "./logger";
 
 const router = new Hono()
@@ -16,7 +17,8 @@ const router = new Hono()
     .route('/template', TemplateRoute)
     .route('/settings', SettingsRoute)
     .route('/logs', LogsRoute)
-    .route('/v1', V1Route);
+    .route('/deploy', DeploymentRoute)
+    .route('/v1', V1Route)
 
 // router.doc('/developer/doc', {
 //     openapi: '3.0.0',

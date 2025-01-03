@@ -18,6 +18,7 @@ Say goodbye to email headaches! With Munbun, Email Template Manager, you can des
 
 ## Features
 
+- [x] Version control
 - [x] Rest API
 - [x] Dashboard
 - [x] Gmail SMTP support

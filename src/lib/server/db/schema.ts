@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, primaryKey, foreignKey } from 'drizzle-orm/sqlite-core';
 import { createId, init } from '@paralleldrive/cuid2';
 import { relations, sql } from 'drizzle-orm';
 
@@ -31,9 +31,28 @@ export const TEMPLATE = sqliteTable('template', {
 	created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`).notNull(),
 }, (table) => {
 	return {
-		booking_approval_id: primaryKey({ columns: [table.name, table.project], name: "template_project_id" }),
+		template_project_id: primaryKey({ columns: [table.name, table.project], name: "template_project_id" }),
 	}
 })
+
+export const DEPLOYMENT = sqliteTable('deployment', {
+	id: text('id').primaryKey().$defaultFn(() => short()),
+	template_name: text("template_name").notNull(),
+	project: text("project_id").notNull(),
+	template: text("template").notNull(),
+	variables: text('variables', { mode: "json" }).$type<{ id: string, name: string, value: string }[]>().notNull().default([]),
+	description: text('description'),
+	message: text("message"),
+	created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+}, (table) => {
+	return {
+		reference: foreignKey({
+			columns: [table.template_name, table.project],
+			foreignColumns: [TEMPLATE.name, TEMPLATE.project],
+			name: "template_project_fk"
+		})
+	}
+});
 
 export const kvTable = sqliteTable("_kvs", {
 	key: text("key").notNull().unique().primaryKey(),

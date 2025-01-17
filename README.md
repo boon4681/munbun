@@ -1,7 +1,7 @@
 # Munbun
-
-![image](http://sharex.boon4681.com/u/FUpqj2.png)
-
+<p align="center" style="margin-top: 20px">
+  <img src="https://sharex.boon4681.com/u/QyaduV.png" align="center"/>
+</p>
 <p align="center" style="margin-top: 20px">
   <p align="center">
     The Open Source email template manager.
@@ -12,9 +12,9 @@
 Say goodbye to email headaches! With Munbun, Email Template Manager, you can design, customize, and send stunning emails using your favorite providers—all in one place.
 
 ## Todo
-- [] Logging system
-- [] Account management
-- [] Edit project and template details
+- [x] Logging system
+- [x] Account management
+- [x] Edit project and template details
 
 ## Features
 

@@ -1,6 +1,6 @@
 # Munbun
 <p align="center" style="margin-top: 20px">
-  <img src="https://sharex.boon4681.com/u/QyaduV.png" align="center"/>
+  <img src="https://sharex.boon4681.com/u/LBIRVf.png" align="center"/>
 </p>
 <p align="center" style="margin-top: 20px">
   <p align="center">

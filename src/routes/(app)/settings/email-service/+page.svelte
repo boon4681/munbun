@@ -18,7 +18,7 @@
             json: {
                 resend_api_key,
                 gmail_smtp_user,
-                gmail_smtp_pass
+                gmail_smtp_pass,
             },
         });
         setTimeout(
@@ -38,7 +38,7 @@
         <h2 class="text-sm text-muted-foreground pb-4 border-b mb-4">Make changes to your email service here.</h2>
     </div>
     <div>
-        <Button class="w-32" disabled={isLoading} on:click={save}>
+        <Button class="w-32" disabled={isLoading || !resend_api_key || (!gmail_smtp_pass && !gmail_smtp_user)} on:click={save}>
             {#if isLoading}
                 <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />
             {/if}
@@ -58,7 +58,15 @@
     </div>
 {:else}
     <div class="flex h-[100px] justify-center items-center">
-        <Button on:click={() => (show = true)}>Show Settings</Button>
+        <Button
+            on:click={async () => {
+                const data = await client.GetEmailConfig();
+                resend_api_key = data.resend_api_key;
+                gmail_smtp_user = data.gmail_smtp_user
+                gmail_smtp_pass = data.gmail_smtp_pass
+                show = true;
+            }}>Show Settings</Button
+        >
     </div>
 {/if}
 <div>

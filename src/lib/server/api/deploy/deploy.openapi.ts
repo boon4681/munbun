@@ -32,7 +32,8 @@ export const GetAllDeployment = createRoute({
                                     value: z.string()
                                 })),
                                 template: z.string(),
-                                message: z.string().nullable()
+                                message: z.string().nullable(),
+                                preview: z.string().nullable()
                             } satisfies ToZodSchema<typeof DEPLOYMENT['$inferSelect']>)
                         )
                     })

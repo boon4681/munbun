@@ -30,7 +30,7 @@ export const GetAllTemplates = createRoute({
                                     name: z.string(),
                                     value: z.string()
                                 })),
-                            } satisfies ToZodSchema<typeof TEMPLATE['$inferSelect']>)
+                            } satisfies Omit<ToZodSchema<typeof TEMPLATE['$inferSelect']>, 'preview'>)
                         )
                     })
                 }
@@ -100,7 +100,7 @@ export const GetTemplate = createRoute({
                                 name: z.string(),
                                 value: z.string()
                             })),
-                        } satisfies ToZodSchema<typeof TEMPLATE['$inferSelect']>)
+                        } satisfies Omit<ToZodSchema<typeof TEMPLATE['$inferSelect']>, 'preview'>)
                     })
                 }
             }

@@ -9,8 +9,5 @@ export default defineConfig({
 
   verbose: true,
   strict: true,
-  dialect: 'sqlite',
-  migrations: {
-    table: '_migrations_'
-  },
+  dialect: 'sqlite'
 });

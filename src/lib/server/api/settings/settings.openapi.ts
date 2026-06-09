@@ -2,7 +2,7 @@ import { createRoute, z } from "@hono/zod-openapi";
 
 export const GetEmailConfig = createRoute({
     method: 'get',
-    path: '/resend',
+    path: '/email',
     description: 'require token cookie',
     tags: ['settings'],
     request: {},
@@ -13,7 +13,9 @@ export const GetEmailConfig = createRoute({
                 'application/json': {
                     schema: z.object({
                         data: z.object({
-                            api_key: z.string()
+                            resend_api_key: z.string(),
+                            gmail_smtp_user: z.string(),
+                            gmail_smtp_pass: z.string()
                         })
                     })
                 }

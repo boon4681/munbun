@@ -1,8 +1,12 @@
 <script lang="ts">
+    import * as Dialog from "@/components/ui/dialog";
     import { client, type Deploy } from "@/api";
     import { page } from "$app/stores";
     import ShowBox from "@/components/munbun/show-box.svelte";
     import { onMount } from "svelte";
+    import { buttonVariants } from "@/components/ui/button";
+    import Preview from "./preview.svelte";
+    import { cn } from "@/utils";
     export let project: string;
     export let template: string;
     let list: Deploy[] = [];
@@ -46,8 +50,26 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="flex items-center gap-2">
                 <ShowBox closeOnCopy={false} show={true}>{item.id}</ShowBox>
+
+                <Dialog.Root>
+                    <Dialog.Trigger class={cn(buttonVariants({ variant: "default", size: "sm" }),"h-8")}>
+                        <!-- <MonitorPlay strokeWidth={1} class="mr-2 size-4"></MonitorPlay> -->
+                        View
+                    </Dialog.Trigger>
+                    <Dialog.Content class="xl:max-w-5xl z-[99999]">
+                        <Dialog.Header class="border-b pb-4">
+                            <Dialog.Title>Preview</Dialog.Title>
+                            <Dialog.Description>Rendering of your template</Dialog.Description>
+                        </Dialog.Header>
+                        {#if item.preview}
+                            <Preview preview={item.preview}></Preview>
+                            {:else}
+                            <div>no preview</div>
+                        {/if}
+                    </Dialog.Content>
+                </Dialog.Root>
             </div>
         </div>
     {/each}

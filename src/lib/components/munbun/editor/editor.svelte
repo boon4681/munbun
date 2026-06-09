@@ -50,7 +50,7 @@
                             },
                         })
                         .then((a) => {
-                            preview = a
+                            preview = a;
                             iframe!.contentWindow!.document.open();
                             iframe!.contentWindow!.document.write(a);
                             iframe!.contentWindow!.document.close();
@@ -70,6 +70,7 @@
                 <div class="w-full h-full" bind:this={main}></div>
             </div>
         </div>
-        <iframe class="bg-white w-full xl:w-1/2 xl:max-w-1/2 h-[600px]" bind:this={iframe} title="Email preview"></iframe>
+        <iframe class="bg-white w-full xl:w-1/2 xl:max-w-1/2 h-[600px]" bind:this={iframe} title="Email preview"
+        ></iframe>
     </div>
 </div>

@@ -46,7 +46,7 @@ const RouteCreateTemplate = createRouter().openapi(CreateTemplate, async (c) => 
     return c.json({ message: "Template created" })
 })
 
-const RouteRenderTemplate = createRouter().openapi(SaveTemplate, async (c) => {
+const RouteSaveTemplate = createRouter().openapi(SaveTemplate, async (c) => {
     const content = c.req.valid("json")
     const params = c.req.valid('param')
     const template = await db.query.TEMPLATE.findFirst({
@@ -110,7 +110,7 @@ const app = createRouter()
     .route("", RouteGetAllTemplates)
     .route("", RouteCreateTemplate)
     .route("", RouteGetTemplate)
-    .route("", RouteRenderTemplate)
+    .route("", RouteSaveTemplate)
     .route("", RouteDeleteTemplate)
 
 export default app

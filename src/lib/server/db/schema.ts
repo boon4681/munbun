@@ -44,6 +44,7 @@ export const DEPLOYMENT = sqliteTable('deployment', {
 	description: text('description'),
 	message: text("message"),
 	created_at: text('created_at').default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+	preview: text('preview')
 }, (table) => {
 	return {
 		reference: foreignKey({

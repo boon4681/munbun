@@ -34,9 +34,9 @@
             <Badge variant={log.tag == "http" ? "outline" : "destructive"}>{log.tag}</Badge>
         </div>
         <div class="flex gap-1 w-full">
-            <div class="w-12 max-w-12 overflow-hidden overflow-ellipsis">
+            <!-- <div class="w-12 max-w-12 overflow-hidden overflow-ellipsis">
                 {log.id}
-            </div>
+            </div> -->
             <div class="w-12 shrink-0">
                 {message.request.method}
             </div>

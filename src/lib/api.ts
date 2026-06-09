@@ -26,6 +26,7 @@ const CreateTemplate = api(client.template[":project"].create.$post)
 const DeleteTemplate = api(client.template[":project"][":name"].$delete)
 const SaveTemplate = api(client.template[":project"][":name"].save.$post)
 
+const GetEmailConfig = api(client.settings['email'].$get)
 const SaveEmailConfig = api(client.settings['email'].$post)
 
 const GetLogs = api(client.logs.logs.$get)
@@ -52,6 +53,7 @@ const ClientAPI = {
     SaveTemplate,
     DeleteTemplate,
     // settings
+    GetEmailConfig,
     SaveEmailConfig,
     // logs
     GetLogs,

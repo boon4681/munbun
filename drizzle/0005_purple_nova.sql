@@ -1,0 +1,1 @@
+ALTER TABLE `template` ADD `preview` text;

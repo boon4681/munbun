@@ -9,7 +9,9 @@ import { GetEmailConfig, SaveEmailConfig } from './settings.openapi';
 const RouteGetEmailConfig = createRouter().openapi(GetEmailConfig, async (c) => {
     return c.json({
         data: {
-            api_key: await KV.get(KVEndpoint.resend_api_key)
+            resend_api_key: await KV.get(KVEndpoint.resend_api_key),
+            gmail_smtp_user: await KV.get(KVEndpoint.gmail_smtp_user),
+            gmail_smtp_pass: await KV.get(KVEndpoint.gmail_smtp_pass)
         }
     })
 })

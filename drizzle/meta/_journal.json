@@ -36,6 +36,20 @@
       "when": 1735907443576,
       "tag": "0004_past_power_pack",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1755994108013,
+      "tag": "0005_purple_nova",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1756955730224,
+      "tag": "0006_mean_sersi",
+      "breakpoints": true
     }
   ]
 }

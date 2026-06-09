@@ -38,12 +38,13 @@ const RouteCreateDeployment = createRouter().openapi(CreateDeployment, async (c)
     })
     if (!template) return c.json({ message: "Project or Template not found" }, 404)
     let compiled = false
+    let result = ""
     try {
         let mjml = (template.template ?? "")
         for (const item of template.variables) {
             mjml = mjml.replaceAll("{{" + item.name + "}}", item.value)
         }
-        mjml2html(mjml)
+        result = mjml2html(mjml).html
         compiled = true
     } catch (error) {
         compiled = false
@@ -53,7 +54,8 @@ const RouteCreateDeployment = createRouter().openapi(CreateDeployment, async (c)
         template_name: template.name,
         template: template.template ?? "",
         variables: template.variables,
-        message: compiled ? "Success" : "Built-failed"
+        message: compiled ? "Success" : "Built-failed",
+        preview: result
     } satisfies typeof DEPLOYMENT['$inferInsert'])
     if (compiled) {
         return c.json({ message: "Deployed" })

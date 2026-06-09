@@ -26,13 +26,15 @@
     };
     const add = async () => {
         const email = prompt("Email here")!;
-        isLoading = true;
-        await client.CreateUser({
-            json: {
-                email,
-            },
-        });
-        users = await client.GetAllUsers();
+        if(email){
+            isLoading = true;
+            await client.CreateUser({
+                json: {
+                    email,
+                },
+            });
+            users = await client.GetAllUsers();
+        }
         isLoading = false;
     };
 

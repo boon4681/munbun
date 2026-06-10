@@ -1,14 +1,14 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-
-    export let preview: string = "";
+    let { preview = "" }: { preview?: string } = $props();
     let iframe: HTMLIFrameElement;
 
-    onMount(() => {
-        iframe!.contentWindow!.document.open();
-        iframe!.contentWindow!.document.write(preview);
-        iframe!.contentWindow!.document.close();
+    $effect(() => {
+        if (!iframe?.contentWindow) return;
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(preview);
+        doc.close();
     });
 </script>
 
-<iframe class="bg-white w-full h-[600px]" bind:this={iframe} title="Email preview"></iframe>
+<iframe class="h-150 w-full bg-white" bind:this={iframe} title="Email preview"></iframe>

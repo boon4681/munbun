@@ -1,50 +1,37 @@
-<script>
-    import Button from "@/components/ui/button/button.svelte";
-    import SettingLayout from "@/components/munbun/setting-layout.svelte";
-    import SettingAside from "@/components/munbun/setting-aside.svelte";
-    import Logo from "@/components/munbun/logo.svelte";
+<script lang="ts">
+    import * as Sidebar from "$lib/components/ui/sidebar";
+    import { Separator } from "$lib/components/ui/separator";
+    import AppSidebar from "$lib/components/munbun/app-sidebar.svelte";
+    import { page } from "$app/state";
 
-    import Sun from "lucide-svelte/icons/sun";
-    import Moon from "lucide-svelte/icons/moon";
-    import { toggleMode } from "mode-watcher";
-    import Auth from "@/components/munbun/auth/auth.svelte";
-    import { onMount } from "svelte";
-    import { ready } from "@/store";
-    import { router } from "@/router";
-    export let data;
+    let { data, children } = $props();
 
-    onMount(() => {
-        ready.set(data.ready);
-    });
+    const title = $derived(
+        (() => {
+            const seg = page.url.pathname.split("/").filter(Boolean)[0];
+            return seg ? seg.charAt(0).toUpperCase() + seg.slice(1) : "Home";
+        })(),
+    );
 </script>
 
-<Auth>
-    <div class="flex flex-col w-full">
-        <div class="p-2 px-4 border-b w-full flex items-center">
-            <Logo class="size-12 mr-2"></Logo>
-            <a class="text-2xl" href="/">Munbun</a>
-            <Button class="ml-auto" on:click={toggleMode} variant="outline" size="icon">
-                <Sun class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon
-                    class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
-                />
-                <span class="sr-only">Toggle theme</span>
-            </Button>
-        </div>
-        <SettingLayout>
-            <SettingAside slot="aside" paths={() => router()}></SettingAside>
-            <div class="mt-10 md:mt-0">
-                <div class="py-6 md:px-4">
-                    <div class="lg:container">
-                        {#if !$ready}
-                            <div class="border border-red-500 my-4 px-6 py-4 bg-orange-500/20 text-red-400">
-                                Please set <b>Resend API-KEY</b> or <b>Gmail SMTP</b> in "settings" {">"} "email-service"
-                            </div>
-                        {/if}
-                        <slot></slot>
-                    </div>
+<Sidebar.Provider>
+    <AppSidebar user={data.user} />
+    <Sidebar.Inset>
+        <header class="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+            <Sidebar.Trigger class="-ml-1" />
+            <Separator orientation="vertical" class="mr-2 !h-4" />
+            <span class="font-medium">{title}</span>
+        </header>
+        <div class="flex flex-1 flex-col gap-4 p-4 md:p-6">
+            {#if !data.ready}
+                <div
+                    class="rounded-md border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-400"
+                >
+                    Please set <b>Resend API key</b> or <b>Gmail SMTP</b> in
+                    <a class="font-medium underline" href="/settings">Settings → Email service</a>.
                 </div>
-            </div>
-        </SettingLayout>
-    </div>
-</Auth>
+            {/if}
+            {@render children()}
+        </div>
+    </Sidebar.Inset>
+</Sidebar.Provider>

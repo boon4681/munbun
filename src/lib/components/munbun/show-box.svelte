@@ -1,89 +1,84 @@
 <script lang="ts">
-    import { cn } from "@/utils";
-    import Copy from "lucide-svelte/icons/copy";
-    import CopyCheck from "lucide-svelte/icons/copy-check";
-    import Eye from "lucide-svelte/icons/eye";
-    import EyeOff from "lucide-svelte/icons/eye-off";
-    let className: string = "";
-    export let show = false;
-    export let placeholder = "";
-    export let closeOnCopy = true;
-    export { className as class };
+    import { cn } from "$lib/utils";
+    import type { Snippet } from "svelte";
+    import Copy from "@lucide/svelte/icons/copy";
+    import CopyCheck from "@lucide/svelte/icons/copy-check";
+    import Eye from "@lucide/svelte/icons/eye";
+    import EyeOff from "@lucide/svelte/icons/eye-off";
 
-    let copied = false;
+    let {
+        show = $bindable(false),
+        placeholder = "",
+        closeOnCopy = true,
+        class: className = "",
+        children,
+    }: {
+        show?: boolean;
+        placeholder?: string;
+        closeOnCopy?: boolean;
+        class?: string;
+        children: Snippet;
+    } = $props();
+
+    let copied = $state(false);
     let container: HTMLElement;
-    const copy = () => {
+
+    const copy = async () => {
         if (copied) return;
-        let copyText: HTMLInputElement = document.createElement("input");
-        copyText.style.position = "fixed";
-        copyText.style.left = "-9999px";
-        copyText.value = container.textContent!;
-        document.body.appendChild(copyText);
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        document.execCommand("copy");
-        navigator.clipboard.writeText(copyText.value).then(
-            function () {
-                console.log("Async: Copying to clipboard was successful!");
-            },
-            function (err) {
-                console.error("Async: Could not copy text: ", err);
-            },
-        );
-        copyText.remove();
+        try {
+            await navigator.clipboard.writeText(container.textContent ?? "");
+        } catch {
+            /* clipboard may be unavailable */
+        }
         copied = true;
         setTimeout(() => {
-            if (closeOnCopy) {
-                show = false;
-            }
+            if (closeOnCopy) show = false;
             copied = false;
         }, 1000);
     };
 </script>
 
-<!-- svelte-ignore a11y_interactive_supports_focus -->
-<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
     class={cn(
-        "text-sm h-8 max-w-[200px] min-w-0 w-full overflow-hidden text-nowrap border my-2 border-muted-foreground/60 rounded-md",
+        "my-2 h-8 w-full min-w-0 max-w-[200px] overflow-hidden text-nowrap rounded-md border border-muted-foreground/60 text-sm",
         className,
     )}
 >
-    <div class="flex h-full items-center gap-2 relative">
-        <div
-            on:click={copy}
-            role="button"
-            class="shrink-0 hover:bg-foreground transition-all rounded hover:text-background p-1 size-6 ml-2"
+    <div class="relative flex h-full items-center gap-2">
+        <button
+            type="button"
+            onclick={copy}
+            class="ml-2 size-6 shrink-0 rounded p-1 transition-all hover:bg-foreground hover:text-background"
         >
             {#if !copied}
-                <Copy class="size-full" strokeWidth={1}></Copy>
+                <Copy class="size-full" strokeWidth={1} />
             {:else}
-                <CopyCheck class="size-full" strokeWidth={1}></CopyCheck>
+                <CopyCheck class="size-full" strokeWidth={1} />
             {/if}
-        </div>
+        </button>
         <div
             bind:this={container}
             class:pointer-events-none={!show}
-            class="py-2 text-muted-foreground text-ellipsis w-full overflow-hidden"
+            class="w-full overflow-hidden text-ellipsis py-2 text-muted-foreground"
         >
-            <slot></slot>
+            {@render children()}
         </div>
         <div
             class:hidden={show}
-            class="absolute top-0 left-0 backdrop-blur flex px-4 items-center size-full bg-foreground/10"
+            class="absolute left-0 top-0 flex size-full items-center bg-foreground/10 px-4 backdrop-blur"
         >
             {placeholder}
         </div>
-        <div
-            role="button"
-            on:click={() => (show = !show)}
-            class="relative shrink-0 hover:bg-foreground transition-all rounded hover:text-background p-1 size-6 mr-1"
+        <button
+            type="button"
+            onclick={() => (show = !show)}
+            class="relative mr-1 size-6 shrink-0 rounded p-1 transition-all hover:bg-foreground hover:text-background"
         >
             {#if !show}
-                <EyeOff class="size-full" strokeWidth={1}></EyeOff>
+                <EyeOff class="size-full" strokeWidth={1} />
             {:else}
-                <Eye class="size-full" strokeWidth={1}></Eye>
+                <Eye class="size-full" strokeWidth={1} />
             {/if}
-        </div>
+        </button>
     </div>
 </div>

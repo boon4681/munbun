@@ -1,6 +1,6 @@
-import { hc } from "hono/client";
-import type { HonoServerRef } from "../app";
-let browserClient: ReturnType<typeof hc<HonoServerRef>>;
+import type { App } from '$server'
+import { hc } from 'hono/client';
+let browserClient: ReturnType<typeof hc<App>>;
 
 export const createClient = (fetch: Window['fetch']) => {
     const isBrowser = typeof window !== 'undefined';
@@ -10,8 +10,8 @@ export const createClient = (fetch: Window['fetch']) => {
         return browserClient;
     }
 
-    const client = hc<HonoServerRef>(origin + '/api', { fetch });
-    
+    const client = hc<App>(origin, { fetch });
+
     if (isBrowser) {
         browserClient = client;
     }
@@ -19,4 +19,4 @@ export const createClient = (fetch: Window['fetch']) => {
     return client;
 };
 
-export type HonoClient = ReturnType<typeof hc<HonoServerRef>>;
+export type HonoClient = ReturnType<typeof hc<App>>;

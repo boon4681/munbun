@@ -1,76 +1,105 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { EditorView, basicSetup } from "codemirror";
     import { indentWithTab } from "@codemirror/commands";
     import { lineNumbers, keymap } from "@codemirror/view";
-    import { indentUnit, foldGutter } from "@codemirror/language";
-    import { lintGutter, linter } from "@codemirror/lint";
-    import { createEventDispatcher, onMount } from "svelte";
-    import { github_dark_fake } from "./editor/theme.js";
-    import { parse } from "./lang/grammar.js";
-    import { beautifySql } from "./lang/formatter.js";
-    import { oneDark, oneDarkTheme } from "@codemirror/theme-one-dark";
+    import { indentUnit } from "@codemirror/language";
+    import { oneDark } from "@codemirror/theme-one-dark";
     import { xml } from "@codemirror/lang-xml";
-    import { client } from "@/api.js";
-    const dispatch = createEventDispatcher();
+    import { client } from "$lib/api";
+
+    let {
+        preview = $bindable(""),
+        project,
+        name,
+        doc = "",
+        status = $bindable<"idle" | "saving" | "saved" | "error">("idle"),
+    }: {
+        preview?: string;
+        project: string;
+        name: string;
+        doc?: string;
+        status?: "idle" | "saving" | "saved" | "error";
+    } = $props();
+
     let main: HTMLElement;
     let iframe: HTMLIFrameElement;
-    export let preview: string;
-    export let project: string;
-    export let name: string;
-    export let doc: string = ``;
-    export let extensions: any[] = [];
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const render = (html: string) => {
+        preview = html;
+        if (!iframe?.contentWindow) return;
+        const d = iframe.contentWindow.document;
+        d.open();
+        d.write(html);
+        d.close();
+    };
+
+    const save = async (mjml: string) => {
+        status = "saving";
+        try {
+            const res = await client()
+                .template[":project"][":name"].save.$post({
+                    param: { project, name },
+                    json: { mjml },
+                });
+            const json = await res.json();
+            render(("data" in json ? json.data : "") ?? "");
+            status = "saved";
+        } catch {
+            status = "error";
+        }
+    };
+
     onMount(() => {
-        let editor = new EditorView({
+        const editor = new EditorView({
             doc,
             extensions: [
                 basicSetup,
                 xml(),
-                ...extensions,
                 lineNumbers(),
                 indentUnit.of("    "),
-                // foldGutter(),
-                // lintGutter(),
                 keymap.of([indentWithTab]),
                 EditorView.theme({
                     "&.cm-editor": { height: "100%" },
                     ".cm-scroller": { overflow: "auto" },
                 }),
                 oneDark,
-                // github_dark_fake,
                 EditorView.updateListener.of((v) => {
-                    doc = v.state.doc.toString();
-                    client
-                        .SaveTemplate({
-                            param: {
-                                project,
-                                name,
-                            },
-                            json: {
-                                mjml: doc,
-                            },
-                        })
-                        .then((a) => {
-                            preview = a;
-                            iframe!.contentWindow!.document.open();
-                            iframe!.contentWindow!.document.write(a);
-                            iframe!.contentWindow!.document.close();
-                        });
+                    if (!v.docChanged) return;
+                    const next = v.state.doc.toString();
+                    clearTimeout(timer);
+                    timer = setTimeout(() => save(next), 400);
                 }),
             ],
             parent: main,
         });
+        // initial preview render
+        save(doc ?? "");
+        return () => {
+            clearTimeout(timer);
+            editor.destroy();
+        };
     });
 </script>
 
-<div class="border rounded">
-    <div class="border-b px-4 py-2">Template Editor</div>
-    <div class="w-full flex flex-col xl:flex-row">
-        <div class="w-full xl:w-1/2 xl:max-w-1/2 border-r">
-            <div class="h-full max-h-[600px] min-h-[600px] relative overflow-auto">
-                <div class="w-full h-full" bind:this={main}></div>
+<div class="rounded border">
+    <div class="flex items-center justify-between border-b px-4 py-2">
+        <span>Template Editor</span>
+        <span class="text-xs text-muted-foreground">
+            {#if status === "saving"}Saving…{:else if status === "saved"}Saved{:else if status === "error"}Save failed{/if}
+        </span>
+    </div>
+    <div class="flex w-full flex-col xl:flex-row">
+        <div class="w-full border-r xl:w-1/2 xl:max-w-1/2">
+            <div class="relative max-h-[600px] min-h-[600px] overflow-auto">
+                <div class="h-full w-full" bind:this={main}></div>
             </div>
         </div>
-        <iframe class="bg-white w-full xl:w-1/2 xl:max-w-1/2 h-[600px]" bind:this={iframe} title="Email preview"
+        <iframe
+            class="h-[600px] w-full bg-white xl:w-1/2 xl:max-w-1/2"
+            bind:this={iframe}
+            title="Email preview"
         ></iframe>
     </div>
 </div>

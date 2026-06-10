@@ -1,67 +1,51 @@
-import type { ClientRequest, ClientRequestOptions, ClientResponse } from "hono/client";
-import { createClient } from "./client";
-import type { StripResponse } from "./utils";
-import { api } from "./api.utils";
+import type { ClientResponse, ClientRequestOptions } from "hono/client";
+import type { StatusCode } from "hono/utils/http-status";
+import type { Endpoint } from "hono/types";
+import { createClient } from "$lib/client";
 
-export type Project = StripResponse<typeof GetAllProjects>[number]
-export type Template = StripResponse<typeof GetAllTemplates>[number]
-export type User = StripResponse<typeof GetMe>
-export type Log = StripResponse<typeof GetLogs>[number]
-export type Deploy = StripResponse<typeof GetAllDeployment>[number]
+type InferEndpointType<T> = T extends (args: infer R, options: any | undefined) => Promise<infer U>
+    ? U extends ClientResponse<infer O, infer S, infer F>
+        ? { input: NonNullable<R>; output: O; outputFormat: F; status: S }
+        : never
+    : never;
 
-const client = createClient(fetch)
-const GetMe = api(client.user["@me"].$get)
-const GetAllUsers = api(client.user.all.$get)
-const CreateUser = api(client.user.$post)
-const DeleteUser = api(client.user.$delete)
-
-const GetAllProjects = api(client.project.all.$get)
-const GetProject = api(client.project[":id"].$get)
-const RevokeProjectAPIKey = api(client.project[":id"]["api-key"].$patch)
-const DeleteProject = api(client.project[":id"].$delete)
-const CreateProject = api(client.project.create.$post)
-
-const GetAllTemplates = api(client.template[":project"].all.$get)
-const CreateTemplate = api(client.template[":project"].create.$post)
-const DeleteTemplate = api(client.template[":project"][":name"].$delete)
-const SaveTemplate = api(client.template[":project"][":name"].save.$post)
-
-const GetEmailConfig = api(client.settings['email'].$get)
-const SaveEmailConfig = api(client.settings['email'].$post)
-
-const GetLogs = api(client.logs.logs.$get)
-const GetAllDeployment = api(client.deploy[":project"][":name"].$get)
-const CreateDeployment = api(client.deploy[":project"][":name"].$post)
-
-const V1GetProviders = api(client.v1.providers.$get)
-
-const ClientAPI = {
-    // user
-    GetMe,
-    GetAllUsers,
-    CreateUser,
-    DeleteUser,
-    // projects
-    GetAllProjects,
-    GetProject,
-    RevokeProjectAPIKey,
-    DeleteProject,
-    CreateProject,
-    // templates
-    GetAllTemplates,
-    CreateTemplate,
-    SaveTemplate,
-    DeleteTemplate,
-    // settings
-    GetEmailConfig,
-    SaveEmailConfig,
-    // logs
-    GetLogs,
-    // deployment
-    GetAllDeployment,
-    CreateDeployment,
-    // v1
-    V1GetProviders
+type InferResponseTypeFromEndpoint<T extends Endpoint, U extends StatusCode> = T extends {
+    output: infer O;
+    status: infer S;
 }
+    ? S extends U
+        ? O
+        : never
+    : never;
 
-export { ClientAPI as client }
+type InferResponseType<T, U extends StatusCode = StatusCode> = InferDataType<
+    InferResponseTypeFromEndpoint<InferEndpointType<T>, U>
+>;
+type InferDataType<T> = T extends { data: infer D } ? D : T;
+type InferArgs<T> = T extends (args: infer A, ...rest: any[]) => any ? A : never;
+type InferOptions<T> = T extends (args: any, options: infer O) => any ? O : never;
+
+/**
+ * Wraps a hono RPC endpoint call so it resolves to the `data` field on success
+ * and throws the parsed error JSON on a non-200 response.
+ */
+export const api = <
+    T extends (args?: any, options?: ClientRequestOptions) => Promise<ClientResponse<any, any, any>>,
+>(
+    func: T,
+) => {
+    return async (
+        args?: InferArgs<T>,
+        options?: InferOptions<T>,
+    ): Promise<InferResponseType<T, 200>> => {
+        const res = await func(args, options);
+        if (res.status !== 200) {
+            throw await res.json();
+        }
+        const json = await res.json();
+        return json.data;
+    };
+};
+
+/** Browser hono client scoped to the `/api` routes. */
+export const client = () => createClient(fetch).api;

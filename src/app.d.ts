@@ -11,4 +11,3 @@ declare global {
 }
 
 export {};
-export type HonoServerRef = import('./lib/server/server').HonoServer

@@ -1,147 +1,137 @@
 <script lang="ts">
-    import { page } from "$app/stores";
-    import * as Dialog from "@/components/ui/dialog";
-    import * as Breadcrumb from "$lib/components/ui/breadcrumb/index.js";
-    import { client, type Template } from "@/api.js";
-    import TemplateCard from "@/components/munbun/templates/template-card.svelte";
     import { onMount } from "svelte";
-    import { Button } from "@/components/ui/button/index.js";
-    import { Label } from "@/components/ui/label/index.js";
-    import { Input } from "@/components/ui/input/index.js";
-    import LoaderCircle from "lucide-svelte/icons/loader-circle";
-    import KeySquare from "lucide-svelte/icons/key-square";
-    import Plus from "lucide-svelte/icons/plus";
-    import { Textarea } from "@/components/ui/textarea/index.js";
-    import ShowBox from "@/components/munbun/show-box.svelte";
+    import { invalidateAll } from "$app/navigation";
+    import { client } from "$lib/api";
+    import * as Breadcrumb from "$lib/components/ui/breadcrumb";
+    import * as Dialog from "$lib/components/ui/dialog";
+    import * as Card from "$lib/components/ui/card";
+    import { Button } from "$lib/components/ui/button";
+    import { Input } from "$lib/components/ui/input";
+    import { Textarea } from "$lib/components/ui/textarea";
+    import ShowBox from "$lib/components/munbun/show-box.svelte";
+    import LoaderCircle from "@lucide/svelte/icons/loader-circle";
+    import KeySquare from "@lucide/svelte/icons/key-square";
+    import Plus from "@lucide/svelte/icons/plus";
+    import Trash2 from "@lucide/svelte/icons/trash-2";
 
-    export let data;
-    let templates: Template[] = [];
-    const load = async () => {
-        templates = await client.GetAllTemplates({
-            param: {
-                project: data.project.id,
-            },
-        });
+    type Template = {
+        name: string;
+        project: string;
+        description: string | null;
+        created_at: string;
     };
 
-    let open = false;
-    let name = "";
-    let description = "";
+    let { data } = $props();
+    const project = $derived(data.project);
+    let templates = $state<Template[]>([]);
 
-    let isLoading = false;
+    let open = $state(false);
+    let name = $state("");
+    let description = $state("");
+    let saving = $state(false);
+    let error = $state("");
+
+    const load = async () => {
+        const res = await client().template[":project"].all.$get({
+            param: { project: project.id },
+        });
+        const json = await res.json();
+        templates = ("data" in json ? json.data : []) ?? [];
+    };
+
+    const create = async () => {
+        if (saving || !name.trim()) return;
+        saving = true;
+        error = "";
+        try {
+            const res = await client().template[":project"].create.$post({
+                param: { project: project.id },
+                json: { name: name.trim(), description: description.trim() || undefined },
+            });
+            if (res.ok) {
+                open = false;
+                name = "";
+                description = "";
+                await load();
+            } else {
+                const json = await res.json();
+                error = "message" in json ? json.message : "Failed to create template";
+            }
+        } finally {
+            saving = false;
+        }
+    };
+
+    const removeTemplate = async (templateName: string) => {
+        if (!confirm(`Delete template "${templateName}"?`)) return;
+        await client().template[":project"][":name"].$delete({
+            param: { project: project.id, name: templateName },
+        });
+        await load();
+    };
 
     const revoke = async () => {
-        if (isLoading) return;
-        let start = Date.now();
-        isLoading = true;
-        
-        setTimeout(
-            () => {
-                close();
-                isLoading = false;
-            },
-            Math.max(1000, Date.now() - start),
-        );
-    }
-
-    const submit = async () => {
-        if (isLoading) return;
-        let start = Date.now();
-        isLoading = true;
-        await client.CreateTemplate({
-            param: {
-                project: data.project.id,
-            },
-            json: {
-                name,
-                description,
-            },
+        if (!confirm("Revoke and regenerate the API key? Existing integrations will break.")) return;
+        const res = await client().project[":id"]["api-key"].$patch({
+            param: { id: project.id },
         });
-        open = false;
-        setTimeout(
-            () => {
-                close();
-                isLoading = false;
-            },
-            Math.max(1000, Date.now() - start),
-        );
-    };
-
-    const close = () => {
-        open = false;
-        name = "";
-        description = "";
+        if (res.ok) {
+            await invalidateAll();
+        }
     };
 
     onMount(() => {
         load();
-        const i = setInterval(load, 2000);
-        return () => {
-            clearInterval(i);
-        };
-    });
-
-    onMount(() => {
-        load();
+        const i = setInterval(load, 4000);
+        return () => clearInterval(i);
     });
 </script>
 
 <Breadcrumb.Root>
-    <Breadcrumb.List class="text-base">
+    <Breadcrumb.List>
         <Breadcrumb.Item>
-            <Breadcrumb.Link class="text-primary" href="/">Projects</Breadcrumb.Link>
+            <Breadcrumb.Link href="/projects">Projects</Breadcrumb.Link>
         </Breadcrumb.Item>
         <Breadcrumb.Separator />
         <Breadcrumb.Item>
-            <Breadcrumb.Link href="/projects/{$page.params['id']}">{$page.params["id"]}</Breadcrumb.Link>
+            <Breadcrumb.Page>{project.name}</Breadcrumb.Page>
         </Breadcrumb.Item>
     </Breadcrumb.List>
 </Breadcrumb.Root>
 
-<div class="flex border-b min-h-24 flex-col mt-4 lg:mt-0 lg:flex-row gap-4 mb-6">
-    <div class="w-full">
-        <h1 class="text-3xl font-semibold">{data.project.name}</h1>
-        <div class="text-muted-foreground">{data.project.name}-{data.project.id}</div>
-        <div class="flex items-center gap-4">
-            <ShowBox placeholder={"API-KEY"}>{data.project.api_key}</ShowBox>
-        </div>
+<div class="flex items-start justify-between gap-4">
+    <div class="min-w-0">
+        <h1 class="text-xl font-semibold">{project.name}</h1>
+        <p class="text-sm text-muted-foreground">Templates in this project.</p>
+        <ShowBox placeholder="API-KEY" class="mt-1 font-mono">{project.api_key}</ShowBox>
     </div>
-    <div class="flex flex-col md:flex-row gap-2">
-        <Button variant="outline" class="w-full">
-            <KeySquare class="mr-2 h-4 w-4" />
-            Revoke API-KEY
+    <div class="flex shrink-0 items-center gap-2">
+        <Button variant="outline" onclick={revoke}>
+            <KeySquare class="size-4" /> Revoke key
         </Button>
-        <Dialog.Root bind:open closeOnOutsideClick={!isLoading} onOutsideClick={close}>
-            <Dialog.Trigger asChild let:builder>
-                <Button builders={[builder]} class="w-full">
-                    <Plus class="mr-2 h-4 w-4" />
-                    Create Template
-                </Button>
+        <Dialog.Root bind:open>
+            <Dialog.Trigger>
+                {#snippet child({ props })}
+                    <Button {...props}><Plus class="size-4" /> New template</Button>
+                {/snippet}
             </Dialog.Trigger>
             <Dialog.Content>
                 <Dialog.Header>
-                    <Dialog.Title>Add a template</Dialog.Title>
-                    <Dialog.Description>The home of something big!</Dialog.Description>
+                    <Dialog.Title>Create template</Dialog.Title>
+                    <Dialog.Description>Create a new email template in this project.</Dialog.Description>
                 </Dialog.Header>
-                <div class="grid w-full items-center gap-1.5">
-                    <Label for="template-name">Name</Label>
-                    <Input id="template-name" placeholder="Project name" bind:value={name}></Input>
-                    <p class="text-muted-foreground text-sm">Enter your template name.</p>
-                </div>
-                <div class="grid w-full items-center gap-1.5">
-                    <Label for="template-description">Description</Label>
+                <div class="flex flex-col gap-3 py-2">
+                    <Input placeholder="Template name" bind:value={name} maxlength={32} />
                     <Textarea
-                        id="template-description"
-                        class="resize-none h-28"
-                        placeholder="Description about your template."
+                        class="h-24 resize-none"
+                        placeholder="Description (optional)"
                         bind:value={description}
-                    ></Textarea>
+                    />
                 </div>
                 <Dialog.Footer>
-                    <Button class="w-32" on:click={submit}>
-                        {#if isLoading}
-                            <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />
-                        {/if}
+                    <Button variant="outline" onclick={() => (open = false)}>Cancel</Button>
+                    <Button onclick={create} disabled={saving || !name.trim()}>
+                        {#if saving}<LoaderCircle class="size-4 animate-spin" />{/if}
                         Create
                     </Button>
                 </Dialog.Footer>
@@ -149,12 +139,39 @@
         </Dialog.Root>
     </div>
 </div>
-{#if templates.length}
-    <div class="grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
-        {#each templates as item, _ (item.name + item.project)}
-            <TemplateCard project={data.project} {item}></TemplateCard>
-        {/each}
+
+{#if error}
+    <div class="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        {error}
+    </div>
+{/if}
+
+{#if templates.length === 0}
+    <div class="rounded-lg border border-dashed p-10 text-center text-sm text-muted-foreground">
+        No templates yet. Create your first one.
     </div>
 {:else}
-    <div class="mt-10 justify-center flex text-muted-foreground">No templates found</div>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {#each templates as item (item.name)}
+            <Card.Root>
+                <Card.Header>
+                    <Card.Title>
+                        <a class="hover:underline" href="/projects/{project.id}/{item.name}">{item.name}</a>
+                    </Card.Title>
+                    <Card.Description>{item.description || "No description"}</Card.Description>
+                </Card.Header>
+                <Card.Footer class="justify-between text-xs text-muted-foreground">
+                    <span>{item.created_at}</span>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        class="text-muted-foreground hover:text-destructive"
+                        onclick={() => removeTemplate(item.name)}
+                    >
+                        <Trash2 class="size-4" />
+                    </Button>
+                </Card.Footer>
+            </Card.Root>
+        {/each}
+    </div>
 {/if}

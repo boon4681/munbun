@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { generateKeySync } from "node:crypto";
 import { KVEndpoint } from "$constants";
-import db, { KV } from "@/server/db";
+import { db, KV } from "./server/db";
 import path from "node:path";
 
 migrate(db, { migrationsFolder: path.join(process.cwd(), "drizzle") })

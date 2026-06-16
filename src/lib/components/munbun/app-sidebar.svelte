@@ -2,6 +2,7 @@
     import * as Sidebar from "$lib/components/ui/sidebar";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import { page } from "$app/state";
+    import LayoutDashboard from "@lucide/svelte/icons/layout-dashboard";
     import FolderKanban from "@lucide/svelte/icons/folder-kanban";
     import ScrollText from "@lucide/svelte/icons/scroll-text";
     import Users from "@lucide/svelte/icons/users";
@@ -12,6 +13,7 @@
     let { user }: { user: { email: string; role: string } } = $props();
 
     const items = [
+        { title: "Overview", url: "/overview", icon: LayoutDashboard },
         { title: "Projects", url: "/projects", icon: FolderKanban },
         { title: "Logs", url: "/logs", icon: ScrollText },
         { title: "Users", url: "/users", icon: Users },

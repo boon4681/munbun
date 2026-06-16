@@ -8,4 +8,5 @@ export enum KVEndpoint {
     resend_api_key = "resend.api-key",
     gmail_smtp_user = "gmail.smtp.user",
     gmail_smtp_pass = "gmail.smtp.pass",
+    daily_email_limit = "email.daily-limit",
 }

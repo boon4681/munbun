@@ -3,6 +3,7 @@ import { googleAuth } from "@hono/oauth-providers/google";
 import { setCookie } from "hono/cookie";
 import { html } from "hono/html";
 import { eq } from "drizzle-orm";
+import { DateTime } from "luxon";
 import { env } from "$env/dynamic/private";
 import { db, KV } from "$server/db";
 import { USER } from "$server/db/schema";
@@ -38,10 +39,11 @@ export default new Hono()
                 );
             }
             if (!userAuth) {
+                const now = DateTime.utc().toFormat("yyyy-MM-dd HH:mm:ss");
                 await db.insert(USER).values({
                     email: user.email!,
-                    last_login: new Date().toISOString().split(".")[0],
-                    created_at: new Date().toISOString().split(".")[0],
+                    last_login: now,
+                    created_at: now,
                 });
                 userAuth = await db.query.USER.findFirst({
                     where: eq(USER.email, user.email!),

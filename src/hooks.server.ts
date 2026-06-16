@@ -23,6 +23,10 @@ await KV.init(KVEndpoint.gmail_smtp_pass, async () => {
     return ""
 })
 
+await KV.init(KVEndpoint.daily_email_limit, async () => {
+    return "500"
+})
+
 await KV.init(KVEndpoint.jwt_secret, async () => {
     return generateKeySync("hmac", { length: 2048 }).export().toString("base64")
 })

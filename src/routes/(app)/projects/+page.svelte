@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { client } from "$lib/api";
+    import { formatDate } from "$lib/utils";
     import { Button } from "$lib/components/ui/button";
     import { Input } from "$lib/components/ui/input";
     import * as Card from "$lib/components/ui/card";
@@ -122,7 +123,7 @@
                     <Card.Description>{project.description || "No description"}</Card.Description>
                 </Card.Header>
                 <Card.Footer class="justify-between text-xs text-muted-foreground">
-                    <span>{project.created_at}</span>
+                    <span>{formatDate(project.created_at)}</span>
                     <Button
                         variant="ghost"
                         size="icon"

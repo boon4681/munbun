@@ -4,10 +4,21 @@ import * as schema from "./schema"
 import { eq } from 'drizzle-orm';
 import fs from 'node:fs';
 import type { KVEndpoint } from '../constants';
+
+const DB_PATH = "_munbun_/data.db";
+
 if (!fs.existsSync("_munbun_")) fs.mkdirSync("_munbun_")
-const client = new Database("_munbun_/data.db");
-const db = drizzle(client, { schema })
-export { db };
+
+let client = new Database(DB_PATH);
+let db = drizzle(client, { schema })
+
+export function reload() {
+    client.close();
+    client = new Database(DB_PATH);
+    db = drizzle(client, { schema });
+}
+
+export { db, DB_PATH };
 
 type kvEndpoint = typeof KVEndpoint[keyof typeof KVEndpoint]
 

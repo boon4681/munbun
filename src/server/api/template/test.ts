@@ -7,6 +7,7 @@ import { db, KV } from "$server/db";
 import { KVEndpoint } from "$constants";
 import { TEMPLATE } from "$server/db/schema";
 import { getGmailSMTP, getResend } from "../v1/providers";
+import { checkDailyLimit } from "$server/email-limits";
 
 export default new Hono().post(
     "/:project/:name/test",
@@ -32,6 +33,17 @@ export default new Hono().post(
             return c.json({ message: "Template failed to compile" }, 400);
         }
         const subject = `[Test] ${template.name}`;
+
+        const limit = await checkDailyLimit(1);
+        if (limit) {
+            return c.json(
+                {
+                    message: "Daily email limit reached",
+                    data: { used: limit.used, limit: limit.limit, remaining: limit.remaining },
+                },
+                429,
+            );
+        }
 
         const transporter = await getGmailSMTP(true);
         if (transporter) {

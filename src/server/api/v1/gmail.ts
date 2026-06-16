@@ -6,6 +6,7 @@ import { Hono } from "hono";
 import mjml2html from 'mjml';
 import z from "zod";
 import { getGmailSMTP } from "./providers";
+import { checkDailyLimit } from "$server/email-limits";
 import type SMTPTransport from "nodemailer/lib/smtp-transport";
 import nodemailer from "nodemailer";
 
@@ -47,6 +48,16 @@ export default new Hono().post("/gmail/send", zValidator("header", headers), zVa
     if (!deploy) return c.json({ message: "Deployment not found" }, 404)
     const transporter: false | nodemailer.Transporter<SMTPTransport.SentMessageInfo, SMTPTransport.Options> = await getGmailSMTP(true) as any
     if (transporter == false) return c.json({ message: "Gmail SMTP is not setup properly" }, 400)
+    const limit = await checkDailyLimit(validated.to.length);
+    if (limit) {
+        return c.json(
+            {
+                message: "Daily email limit reached",
+                data: { used: limit.used, limit: limit.limit, remaining: limit.remaining },
+            },
+            429,
+        );
+    }
     let html = deploy.template ?? ""
     for (const v of deploy.variables) {
         if (!validated.data[v.name]) {

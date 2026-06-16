@@ -12,6 +12,7 @@ export default new Hono().post(
             resend_api_key: z.string().optional(),
             gmail_smtp_user: z.string().optional(),
             gmail_smtp_pass: z.string().optional(),
+            daily_email_limit: z.number().int().nonnegative().optional(),
         }),
     ),
     async (c) => {
@@ -24,6 +25,9 @@ export default new Hono().post(
         }
         if (validated.gmail_smtp_pass !== undefined) {
             await KV.set(KVEndpoint.gmail_smtp_pass, validated.gmail_smtp_pass);
+        }
+        if (validated.daily_email_limit !== undefined) {
+            await KV.set(KVEndpoint.daily_email_limit, String(validated.daily_email_limit));
         }
         return c.json({ message: "Email config saved", data: "" });
     },

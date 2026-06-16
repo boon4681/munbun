@@ -1,4 +1,11 @@
 node_modules
+.pnp.*
+.yarn*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
 # Output
 .output
@@ -24,4 +31,4 @@ vite.config.ts.timestamp-*
 
 # SQLite
 *.db
-./_munbun_
+/_munbun*

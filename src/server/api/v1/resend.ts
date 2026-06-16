@@ -5,6 +5,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import type { Resend } from "resend";
 import { getResend } from "./providers";
+import { checkDailyLimit } from "$server/email-limits";
 import mjml2html from 'mjml';
 import z from "zod";
 
@@ -48,6 +49,16 @@ export default new Hono().post("/resend/send", zValidator("header", headers), zV
     if (!deploy) return c.json({ message: "Deployment not found" }, 404)
     const resend: false | Resend = await getResend(true) as any
     if (resend == false) return c.json({ message: "Resend is not setup properly" }, 400)
+    const limit = await checkDailyLimit(validated.to.length);
+    if (limit) {
+        return c.json(
+            {
+                message: "Daily email limit reached",
+                data: { used: limit.used, limit: limit.limit, remaining: limit.remaining },
+            },
+            429,
+        );
+    }
     let html = deploy.template ?? ""
     for (const v of deploy.variables) {
         if (!validated.data[v.name]) {

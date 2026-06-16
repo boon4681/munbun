@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { toast } from "svelte-sonner";
     import { client } from "$lib/api";
+    import { formatDate } from "$lib/utils";
     import * as Dialog from "$lib/components/ui/dialog";
     import { Button, buttonVariants } from "$lib/components/ui/button";
     import { cn } from "$lib/utils";
@@ -93,7 +94,7 @@
                     </div>
                     <div class="flex items-center gap-1 text-muted-foreground">
                         <div class="select-none text-xs font-semibold">at:</div>
-                        <div>{item.created_at}</div>
+                        <div>{formatDate(item.created_at)}</div>
                     </div>
                 </div>
             </div>

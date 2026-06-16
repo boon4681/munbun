@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { invalidateAll } from "$app/navigation";
     import { client } from "$lib/api";
+    import { formatDate } from "$lib/utils";
     import * as Breadcrumb from "$lib/components/ui/breadcrumb";
     import * as Dialog from "$lib/components/ui/dialog";
     import * as Card from "$lib/components/ui/card";
@@ -161,7 +162,7 @@
                     <Card.Description>{item.description || "No description"}</Card.Description>
                 </Card.Header>
                 <Card.Footer class="justify-between text-xs text-muted-foreground">
-                    <span>{item.created_at}</span>
+                    <span>{formatDate(item.created_at)}</span>
                     <Button
                         variant="ghost"
                         size="icon"

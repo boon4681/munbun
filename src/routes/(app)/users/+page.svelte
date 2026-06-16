@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { client } from "$lib/api";
+    import { formatDate } from "$lib/utils";
     import { Button } from "$lib/components/ui/button";
     import { Input } from "$lib/components/ui/input";
     import { Badge } from "$lib/components/ui/badge";
@@ -137,7 +138,7 @@
                             {#if user.email === me}<span class="ml-1 text-xs text-muted-foreground">(you)</span>{/if}
                         </td>
                         <td class="px-3 py-2"><Badge variant="secondary">{user.role}</Badge></td>
-                        <td class="px-3 py-2 text-xs text-muted-foreground">{user.last_login ?? ""}</td>
+                        <td class="px-3 py-2 text-xs text-muted-foreground">{user.last_login ? formatDate(user.last_login) : ""}</td>
                         <td class="px-3 py-2 text-right">
                             {#if user.email !== me}
                                 <Button

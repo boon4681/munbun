@@ -6,10 +6,19 @@ import { logTable } from "$server/db/schema";
 import { CookieName } from "$constants";
 import { JWT } from "$server/jwt";
 
-/**
- * Records every request (except `/api/logs`) into the `_logs` table so the
- * dashboard logs page has something to show.
- */
+export const tagForPath = (path: string): "auth" | "email" | "http" => {
+    if (path.startsWith("/api/auth")) return "auth";
+    if (
+        path.includes("/v1/gmail/send") ||
+        path.includes("/v1/resend/send") ||
+        /^\/api\/template\/[^/]+\/[^/]+\/test$/.test(path)
+    ) {
+        return "email";
+    }
+    return "http";
+};
+
+
 export const dbLogger: MiddlewareHandler = async (c: Context, next: Next) => {
     const { method } = c.req;
     const path = getPath(c.req.raw);
@@ -45,7 +54,7 @@ export const dbLogger: MiddlewareHandler = async (c: Context, next: Next) => {
     if (!path.startsWith("/api/logs")) {
         await db.insert(logTable).values({
             message: JSON.stringify(message),
-            tag: c.error ? "error" : path.startsWith("/api/auth") ? "auth" : "http",
+            tag: c.error ? "error" : tagForPath(path),
             status: String(status),
         });
     }

@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  munbun:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - munbun-data:/app/_munbun_
+    env_file:
+      - .env
+    restart: unless-stopped
+
+volumes:
+  munbun-data:

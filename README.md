@@ -34,6 +34,53 @@ Say goodbye to email headaches! With Munbun, Email Template Manager, you can des
 
 ## Self-hosting
 
+### Using Docker (Recommended)
+
+1. **Clone the repo**
+
+    ```bash
+    git clone https://github.com/boon4681/munbun.git
+    cd munbun
+    ```
+
+2. **Setup environment variables**
+
+    ```bash
+    cp .env.example .env
+    # Edit .env with your Google OAuth credentials and other settings
+    ```
+
+3. **Build and run**
+    
+    ```bash
+    docker build -t munbun .
+    docker run -d -p 3000:3000 -v munbun-data:/app/_munbun_ --env-file .env --name munbun munbun
+    ```
+    
+    Alternatively, if you prefer Docker Compose:
+    
+    Create a `docker-compose.yml`:
+    ```yaml
+    version: '3.8'
+    services:
+      munbun:
+        build: .
+        ports:
+          - "3000:3000"
+        volumes:
+          - munbun-data:/app/_munbun_
+        env_file:
+          - .env
+        restart: unless-stopped
+    
+    volumes:
+      munbun-data:
+    ```
+    And run:
+    ```bash
+    docker-compose up -d
+    ```
+
 ### From Repo
 1. **Clone the repo**
 
@@ -62,9 +109,6 @@ Say goodbye to email headaches! With Munbun, Email Template Manager, you can des
     ```bash
     yarn dev --host
     ```
-
-### Docker
-not yet...
 
 ## Maintainer
 
